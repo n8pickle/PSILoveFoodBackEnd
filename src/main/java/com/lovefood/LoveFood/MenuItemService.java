@@ -1,4 +1,4 @@
 package com.lovefood.LoveFood;
 
-public class MenuItemService {
+public class MenuItemService implements IMenuItemService{
 }
