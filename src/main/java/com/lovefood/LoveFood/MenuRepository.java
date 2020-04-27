@@ -1,5 +1,7 @@
 package com.lovefood.LoveFood;
 
+import org.springframework.stereotype.Repository;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
 
+@Repository
 public class MenuRepository implements IMenuItemRepository{
       public static void main(String args[]) {
     	  
@@ -14,17 +17,17 @@ public class MenuRepository implements IMenuItemRepository{
 
         public List<MenuItem> getMenuItems() {
 
-            MenuItem item = null;
+            List<MenuItem> item = null;
         	
             try {
-                String query = "select * from menu_items.food_items where ItemID = " + id;
+                String query = "select * from menu_items.food_items";
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 String connectionString = "jdbc:mysql://localhost:3306/menu_items";
                 Connection dbConnection = DriverManager.getConnection(connectionString, "root", "");
                 Statement statement = dbConnection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query);
-                if(resultSet.next()) {
-                    item = createmenuItemObject(resultSet);
+                while(resultSet.next()){
+                    item.add(createmenuItemObject(resultSet));
                 }
                 dbConnection.close();
             }
