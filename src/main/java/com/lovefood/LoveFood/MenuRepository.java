@@ -1,15 +1,18 @@
 package com.lovefood.LoveFood;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 public class MenuRepository implements IMenuItemRepository{
       public static void main(String args[]) {
     	  
       }
 
-        public MenuItem getMenuItems(int id) {
+        public List<MenuItem> getMenuItems() {
 
             MenuItem item = null;
         	
@@ -29,19 +32,32 @@ public class MenuRepository implements IMenuItemRepository{
             {
                 e.printStackTrace();
             }
-            return item;
+            return (List<MenuItem>)item;
         }
 
     private MenuItem createmenuItemObject(ResultSet resultSet) {
         MenuItem item = null;
         try {
-        		item = new MenuItem(resultSet.getInt("ItemId"), resultSet.getDouble("Price"), resultSet.getString("Food"), resultSet.getString("Description"), resultSet.getBlob("Picture"));
+        		item = new MenuItem(resultSet.getInt("ItemId"), resultSet.getDouble("Price"), resultSet.getString("Food"), resultSet.getString("Description"), getPicture(resultSet.getBlob("Picture")));
         		
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return item;
         
+    }
+
+    private BufferedImage getPicture(Blob blob)
+    {
+        InputStream in = null;
+        BufferedImage image = null;
+        try {
+            in = blob.getBinaryStream();
+            image = ImageIO.read(in);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 }
